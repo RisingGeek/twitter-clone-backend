@@ -1,19 +1,15 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('Follower', {
+    return sequelize.define('Retweet', {
         id: {
             type: DataTypes.UUID,
             primaryKey: true,
             defaultValue: Sequelize.UUIDV4
         },
-        followed: {
+        user: {
             type: DataTypes.UUID,
             allowNull: false
         },
-        follower: {
-            type: DataTypes.UUID,
-            allowNull: false
-        }
     });
-}
+};

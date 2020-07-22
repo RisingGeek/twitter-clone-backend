@@ -1,4 +1,5 @@
 const Joi = require('@hapi/joi');
+const { options } = require('@hapi/joi');
 
 module.exports = {
     addUserValidation: (data) => {
@@ -9,6 +10,14 @@ module.exports = {
             email: Joi.string().email().required(),
             password: Joi.string().required(),
             dob: Joi.string().min(8).required()
+        }).options({ abortEarly: false });
+        const { error, value } = schema.validate(data);
+        return { error, value };
+    },
+    addTweetValidation: (data) => {
+        const schema = Joi.object({
+            userId: Joi.string().required(),
+            text: Joi.string().required()
         }).options({ abortEarly: false });
         const { error, value } = schema.validate(data);
         return { error, value };

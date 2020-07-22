@@ -4,8 +4,8 @@ const { addUserValidation } = require('../utils/validation');
 
 module.exports = {
     addUser: async (req, res) => {
-        const validation = addUserValidation(req.body)
         // Joi validation checks
+        const validation = addUserValidation(req.body)
         if (validation.error)
             return res.status(400).json({ data: validation.error.details });
 
@@ -21,11 +21,11 @@ module.exports = {
         }
         catch (err) {
             let errors = [];
-            console.log(err)
+            console.log(err.errors)
             err.errors.map(e => {
                 if (e.path === 'users.username' && e.validatorKey === 'not_unique')
                     errors.push('Username is taken');
-                if (e.path === 'users.Users_email_unique' && e.validatorKey === 'not_unique')
+                if (e.path === 'users.email' && e.validatorKey === 'not_unique')
                     errors.push('Email id is already registered');
             });
             return res.status(400).json({ data: errors });
