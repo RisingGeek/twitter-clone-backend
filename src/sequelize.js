@@ -3,6 +3,7 @@ const UserModel = require('./models/User');
 const FollowerModel = require('./models/Follower');
 const TweetModel = require('./models/Tweet');
 const RetweetModel = require('./models/Retweet');
+const LikeModel = require('./models/Like');
 
 // Connect to database
 const { db, username, password } = process.env;
@@ -16,6 +17,7 @@ const User = UserModel(sequelize);
 const Follower = FollowerModel(sequelize);
 const Tweet = TweetModel(sequelize);
 const Retweet = RetweetModel(sequelize);
+const Like = LikeModel(sequelize);
 
 // Follower association
 User.hasMany(Follower, { as: 'Followers', foreignKey: 'follower' });
@@ -25,5 +27,6 @@ module.exports = {
     User,
     Follower,
     Tweet,
-    Retweet
+    Retweet,
+    Like
 }
