@@ -1,5 +1,6 @@
-const { User } = require('../sequelize');
+const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
+const { User, Tweet, sequelize } = require('../sequelize');
 const { addUserValidation } = require('../utils/validation');
 
 module.exports = {
@@ -42,5 +43,39 @@ module.exports = {
         catch (error) {
             return res.status(400).json({ data: error });
         }
+    },
+    loginUser: async (req, res) => {
+        const user = await User.findOne({
+            where: {
+                [Op.or]: [
+                    { username: req.body.user },
+                    { email: req.body.user }
+                ],
+            }
+        });
+        if (!user)
+            return res.status(401).json({ data: "Incorrect username/email" });
+
+        const match = await bcrypt.compare(req.body.password, user.password);
+        return match ? res.status(200).json({ data: user }) : res.status(401).json({ data: "Incorrect password" });
+    },
+    getTweetsByUserId: async (req, res) => {
+        return res.status(200).json(await Tweet.findAll({
+            where: {
+                userId: req.query.userId
+            }
+        }));
+    },
+    getLikesByUserId: async (req, res) => {
+        const sql = `select likes.tweetId from likes inner join users on users.id=likes.userId where users.id='${req.query.userId}'`;
+        const tweets = await Tweet.findAll({
+            where: {
+                id: {
+                    [Op.in]: sequelize.literal(`(${sql})`)
+                }
+            }
+        });
+        return res.status(200).json({ data: tweets })
+
     }
 }

@@ -19,14 +19,21 @@ const Tweet = TweetModel(sequelize);
 const Retweet = RetweetModel(sequelize);
 const Like = LikeModel(sequelize);
 
-// Follower association
+// User -> Follower association
 User.hasMany(Follower, { as: 'Followers', foreignKey: 'follower' });
 User.hasMany(Follower, { as: 'Following', foreignKey: 'followed' });
+
+// User -> Tweet association
+User.hasMany(Tweet, { foreignKey: 'userId' });
+
+// User -> Like association
+User.hasMany(Like, { foreignKey: 'userId' });
 
 module.exports = {
     User,
     Follower,
     Tweet,
     Retweet,
-    Like
+    Like,
+    sequelize
 }

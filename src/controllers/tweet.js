@@ -16,13 +16,6 @@ module.exports = {
             return res.status(400).json({ data: err });
         }
     },
-    getTweetByUserId: async (req, res) => {
-        return res.status(200).json(await Tweet.findAll({
-            where: {
-                userId: req.query.userId
-            }
-        }));
-    },
     likeTweet: async (req, res) => {
         const [like, created] = await Like.findOrCreate({
             where: req.body,
