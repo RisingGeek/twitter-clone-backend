@@ -8,7 +8,7 @@ module.exports = {
         // Joi validation checks
         const validation = addUserValidation(req.body)
         if (validation.error)
-            return res.status(400).json({ data: validation.error.details });
+            return res.status(400).json({ errors: validation.error.details });
 
         try {
             // Create password hash
@@ -18,7 +18,7 @@ module.exports = {
 
             // Add user to User model
             const user = await User.create(req.body);
-            return res.status(200).json({ data: user });
+            return res.status(200).json({ user });
         }
         catch (err) {
             let errors = [];
@@ -29,7 +29,7 @@ module.exports = {
                 if (e.path === 'users.email' && e.validatorKey === 'not_unique')
                     errors.push('Email id is already registered');
             });
-            return res.status(400).json({ data: errors });
+            return res.status(400).json({ errors });
         }
     },
     editUser: async (req, res) => {
@@ -38,10 +38,10 @@ module.exports = {
                 req.body,
                 { where: { id: req.body.id } }
             );
-            return res.status(200).json({ data: user });
+            return res.status(200).json({ user });
         }
         catch (error) {
-            return res.status(400).json({ data: error });
+            return res.status(400).json({ errors: error });
         }
     },
     loginUser: async (req, res) => {
@@ -54,10 +54,10 @@ module.exports = {
             }
         });
         if (!user)
-            return res.status(401).json({ data: "Incorrect username/email" });
+            return res.status(401).json({ user: "Incorrect username/email" });
 
         const match = await bcrypt.compare(req.body.password, user.password);
-        return match ? res.status(200).json({ data: user }) : res.status(401).json({ data: "Incorrect password" });
+        return match ? res.status(200).json({ user }) : res.status(401).json({ password: "Incorrect password" });
     },
     getTweetsByUserId: async (req, res) => {
         return res.status(200).json(await Tweet.findAll({
@@ -75,7 +75,7 @@ module.exports = {
                 }
             }
         });
-        return res.status(200).json({ data: tweets })
+        return res.status(200).json({ tweets })
 
     }
 }

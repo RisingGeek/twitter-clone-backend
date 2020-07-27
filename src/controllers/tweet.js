@@ -6,14 +6,14 @@ module.exports = {
         // Joi validation checks
         const validation = addTweetValidation(req.body)
         if (validation.error)
-            return res.status(400).json({ data: validation.error.details });
+            return res.status(400).json({ errors: validation.error.details });
 
         try {
             const data = await Tweet.create(req.body);
             return res.status(200).json(data);
         }
         catch (err) {
-            return res.status(400).json({ data: err });
+            return res.status(400).json({ errors: err });
         }
     },
     likeTweet: async (req, res) => {
@@ -23,12 +23,12 @@ module.exports = {
         });
         // If user tries to like tweet more than once via POST request
         if (!created) {
-            return res.status(403).json({ error: "Tweet is already liked by user" });
+            return res.status(403).json({ errors: "Tweet is already liked by user" });
         }
 
         const tweet = await Tweet.findByPk(req.body.tweetId);
         await tweet.increment('likesCount');
-        return res.status(200).json({ data: like });
+        return res.status(200).json({ like });
     },
     unlikeTweet: async (req, res) => {
         const unlike = await Like.destroy({
@@ -36,10 +36,10 @@ module.exports = {
         });
         // If user tries to unlike tweet that is not liked via POST request 
         if (unlike == 0)
-            return res.status(403).json({ error: "Tweet is already unliked by user" });
+            return res.status(403).json({ errors: "Tweet is already unliked by user" });
 
         const tweet = await Tweet.findByPk(req.body.tweetId);
         await tweet.decrement('likesCount');
-        return res.status(200).json({ data: unlike });
+        return res.status(200).json({ unlike });
     }
 };
