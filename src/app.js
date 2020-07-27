@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const docs = require('./routes/docs');
 const user = require('./routes/user');
 const follower = require('./routes/follower');
 const tweet = require('./routes/tweet');
@@ -10,6 +11,8 @@ const retweet = require('./routes/retweet');
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static('public'))
+app.use('/', docs);
 app.use('/user', user);
 app.use('/follow', follower);
 app.use('/tweet', tweet)

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>User APIs:</h1>
+    <ul>
+        <li>
+            <p>Adds a new user to twitter clone</p>
+            <a href='/user/add-user'>/user/add-user</a>
+            <br />
+            <pre id="addUser"></pre>
+        </li>
+        <li>
+            <p>Edit user details</p>
+            <a href='/user/edit-user'>/user/edit-user</a>
+            <br />
+            <pre id="editUser"></pre>
+        </li>
+        <li>
+            <p>Login user</p>
+            <a href='/user/login-user'>/user/login-user</a>
+            <pre id="loginUser"></pre>
+        </li>
+        <li>
+            <p>Get tweets of a user</p>
+            <a href='/user/get-tweets'>/user/get-tweets</a>
+            <pre id="getTweets"></pre>
+        </li>
+        <li>
+            <p>Get likes of a user</p>
+            <a href='/user/get-likes'>/user/get-likes</a>
+            <pre id="getLikes"></pre>
+        </li>
+    </ul>
+
+    <h1>Follower APIs</h1>
+    <ul>
+        <li>
+            <p>Follow a user</p>
+            <a href='/follow'>/follow</a>
+            <pre id="follow"></pre>
+        </li>
+        <li>
+            <p>Get a list of followers and following</p>
+            <a href='/follow/details'>/follow/details</a>
+            <pre id="followDetails"></pre>
+        </li>
+    </ul>
+
+    <h1>Tweet APIs</h1>
+    <ul>
+        <li>
+            <p>Add a tweet</p>
+            <a href='/tweet/add-tweet'>/tweet/add-tweet</a>
+            <pre id="addTweet"></pre>
+        </li>
+        <li>
+            <p>Like tweet</p>
+            <a href='/tweet/like'>/tweet/like</a>
+            <pre id="likeTweet"></pre>
+        </li>
+        <li>
+            <p>Unlike tweet</p>
+            <a href='/tweet/unlike'>/tweet/unlike</a>
+            <pre id="unlikeTweet"></pre>
+        </li>
+    </ul>
+
+    <script>
+        const addUser = {
+            "type": "POST",
+            "body": {
+                "firstname": "string:required",
+                "lastname": "string:required",
+                "username": "string:required",
+                "email": "string:required",
+                "password": "string:required",
+                "avatar": "base64",
+                "cover": "base64",
+                "bio": "base64",
+                "location": "string",
+                "dob": "Date:required"
+            }
+        }
+        const editUser = {
+            "type": "PUT",
+            "body": {
+                "id": "string:required",
+                "firstname": "string:required",
+                "lastname": "string:required",
+                "username": "string:required",
+                "avatar": "base64",
+                "cover": "base64",
+                "bio": "base64",
+                "location": "string",
+                "dob": "Date:required"
+            }
+        } 
+        const loginUser = {
+            "type": "POST",
+            "body": {
+                "user": "string:required",
+                "password": "string:required"
+            }
+        }
+        const getTweets = {
+            "type": "GET",   
+        }
+        const getLikes = {
+            "type": "GET",
+            "query-params": {
+                "userId": "string:required"
+            }
+        }
+
+        const follow = {
+            "type": "POST",
+            "body": {
+                "followedId": "string:required",
+                "followerId": "string:required"
+            }
+        }
+        const followDetails = {
+            "type": "GET",
+            "query-parmas": {
+                "id": "string:required"
+            }
+        }
+
+        const addTweet = {
+            type: "POST",
+            "body": {
+                "userId": "string:required",
+                "text": "string:required",
+            }
+        }
+        const likeTweet = {
+            "type:": "POST",
+            "body": {
+                "userId": "string:required",
+                "tweetId": "string:required"
+            }
+        }
+        const unlikeTweet = {
+            "type:": "DELETE",
+            "body": {
+                "userId": "string:required",
+                "tweetId": "string:required"
+            }
+        }
+
+        document.querySelector('#addUser').innerHTML = JSON.stringify(addUser, undefined, 2);
+        document.querySelector('#editUser').innerHTML = JSON.stringify(editUser, undefined, 2);
+        document.querySelector('#loginUser').innerHTML = JSON.stringify(loginUser, undefined, 2);
+        document.querySelector('#getTweets').innerHTML = JSON.stringify(getTweets, undefined, 2);
+        document.querySelector('#getLikes').innerHTML = JSON.stringify(getLikes, undefined, 2);
+
+        document.querySelector('#follow').innerHTML = JSON.stringify(follow, undefined, 2);
+        document.querySelector('#followDetails').innerHTML = JSON.stringify(followDetails, undefined, 2);
+
+        document.querySelector('#addTweet').innerHTML = JSON.stringify(addTweet, undefined, 2);
+        document.querySelector('#likeTweet').innerHTML = JSON.stringify(likeTweet, undefined, 2);
+        document.querySelector('#unlikeTweet').innerHTML = JSON.stringify(unlikeTweet, undefined, 2);
+    </script>
+</body>
+
+</html>

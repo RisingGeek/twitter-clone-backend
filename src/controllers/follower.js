@@ -2,7 +2,7 @@ const { User, Follower } = require('../sequelize');
 
 module.exports = {
     followUser: async (req, res) => {
-        // body -> {followeId, followerId}
+        // body -> {followedId, followerId}
         const body = {
             followed: req.body.followedId,
             follower: req.body.followerId
