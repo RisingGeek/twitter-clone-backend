@@ -59,6 +59,14 @@ module.exports = {
         const match = await bcrypt.compare(req.body.password, user.password);
         return match ? res.status(200).json({ user }) : res.status(401).json({ password: "Incorrect password" });
     },
+    getUserByUsername: async (req, res) => {
+        const user = await User.findOne({
+            where: {
+                username: req.query.username
+            }
+        });
+        return res.status(200).json(user);
+    },
     getTweetsByUserId: async (req, res) => {
         return res.status(200).json(await Tweet.findAll({
             where: {
