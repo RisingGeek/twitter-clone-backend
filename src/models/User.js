@@ -33,7 +33,8 @@ module.exports = (sequelize) => {
             allowNull: false,
         },
         avatar: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            defaultValue: 'https://res.cloudinary.com/twitter-clone-media/image/upload/v1596009619/user_wfe6xq.png'
         },
         cover: {
             type: DataTypes.STRING
