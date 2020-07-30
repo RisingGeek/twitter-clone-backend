@@ -15,11 +15,11 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        commentCount: {
+        commentsCount: {
             type: DataTypes.INTEGER,
             defaultValue: 0
         },
-        retweetCount: {
+        retweetsCount: {
             type: DataTypes.INTEGER,
             defaultValue: 0
         },

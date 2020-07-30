@@ -27,6 +27,8 @@ User.hasMany(Follower, { as: "Following", foreignKey: "followed" });
 User.hasMany(Tweet, { foreignKey: "userId" });
 // User -> Like association
 User.hasMany(Like, { foreignKey: "userId" });
+// User -> Retweet association
+User.hasMany(Retweet, { foreignKey: "userId" });
 // Tweet -> Retweet association
 Tweet.hasMany(Retweet, { foreignKey: "tweetId" });
 

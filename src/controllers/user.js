@@ -62,23 +62,49 @@ module.exports = {
     return res.status(200).json(user);
   },
   getTweetsByUserId: async (req, res) => {
-    let tweets = await Tweet.findAll({
-      where: {
-        userId: req.query.userId,
-      },
-    });
-    const sql = `select retweets.tweetId from retweets inner join tweets on tweets.id=retweets.tweetId where retweets.userId='${req.query.userId}'`;
-    let retweets = await Tweet.findAll({
-      where: {
-        id: {
-          [Op.in]: sequelize.literal(`(${sql})`),
+    let tweets = await User.findAll({
+      attributes: ["firstname", "lastname", "username", "avatar"],
+      include: {
+        model: Tweet,
+        required: true,
+        attributes: [
+          "id",
+          "text",
+          "commentsCount",
+          "retweetsCount",
+          "likesCount",
+          "createdAt",
+        ],
+        where: {
+          userId: req.query.userId,
         },
       },
+      raw: true,
     });
-    retweets = retweets.map((retweet) => {
-      retweet.setDataValue("isRetweet", true);
-      return retweet;
+    const sql = `select retweets.tweetId from retweets inner join tweets on tweets.id=retweets.tweetId where retweets.userId='${req.query.userId}'`;
+    let retweets = await User.findAll({
+      attributes: ["firstname", "lastname", "username", "avatar"],
+      include: {
+        model: Tweet,
+        required: true,
+        attributes: [
+          "id",
+          "text",
+          "commentsCount",
+          "retweetsCount",
+          "likesCount",
+          "createdAt",
+        ],
+        where: {
+          id: {
+            [Op.in]: sequelize.literal(`(${sql})`),
+          },
+        },
+      },
+      raw: true,
     });
+    console.log(retweets);
+    retweets = retweets.map((retweet) => ({ ...retweet, isRetweet: true }));
     tweets = tweets.concat(retweets).sort((a, b) => b.createdAt - a.createdAt);
     res.status(200).json({ tweets });
   },
@@ -92,8 +118,8 @@ module.exports = {
         attributes: [
           "id",
           "text",
-          "commentCount",
-          "retweetCount",
+          "commentsCount",
+          "retweetsCount",
           "likesCount",
           "createdAt",
         ],
