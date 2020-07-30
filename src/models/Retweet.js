@@ -7,9 +7,13 @@ module.exports = (sequelize) => {
             primaryKey: true,
             defaultValue: Sequelize.UUIDV4
         },
-        user: {
+        userId: {
             type: DataTypes.UUID,
             allowNull: false
         },
+        tweetId: {
+            type: DataTypes.UUID,
+            allowNull: false
+        }
     });
 };
