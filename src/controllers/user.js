@@ -1,6 +1,6 @@
 const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
-const { User, Tweet, sequelize } = require("../sequelize");
+const { User, Tweet, Retweet, Like, sequelize } = require("../sequelize");
 const { addUserValidation } = require("../utils/validation");
 
 module.exports = {
@@ -103,13 +103,39 @@ module.exports = {
       },
       raw: true,
     });
-    console.log(retweets);
     retweets = retweets.map((retweet) => ({ ...retweet, isRetweet: true }));
     tweets = tweets.concat(retweets).sort((a, b) => b.createdAt - a.createdAt);
     res.status(200).json({ tweets });
   },
   getLikesByUserId: async (req, res) => {
-    const sql = `select likes.tweetId from likes inner join users on users.id=likes.userId where users.id='${req.query.userId}'`;
+    // body -> {userId, myId}
+    /* 
+      1. Get tweets liked by user and tweetIds retweeted and liked by me
+      2. Add tweetIds of retweets and likes in 2 Sets
+      3. Map over liked tweets to add selfRetweeted -> true and selfLiked -> true
+    */
+
+    Promise.all([
+      module.exports.getLikedTweets(req.query.userId),
+      module.exports.getMyRetweets(req.query.myId),
+      module.exports.getMyLikes(req.query.myId),
+    ]).then((values) => {
+      let likedTweets = values[0];
+      const retweetSet = new Set();
+      const likeSet = new Set();
+      values[1].map((tweet) => retweetSet.add(tweet.tweetId));
+      values[2].map((tweet) => likeSet.add(tweet.tweetId));
+      likedTweets = likedTweets.map((tweet) => {
+        let deepCopy = { ...tweet };
+        if (retweetSet.has(tweet["Tweets.id"])) deepCopy.selfRetweeted = true;
+        if (likeSet.has(tweet["Tweets.id"])) deepCopy.selfLiked = true;
+        return deepCopy;
+      });
+      return res.status(200).json({ tweets: likedTweets });
+    });
+  },
+  getLikedTweets: async (userId) => {
+    const sql = `select likes.tweetId from likes inner join users on users.id=likes.userId where users.id='${userId}'`;
     const tweets = await User.findAll({
       attributes: ["firstname", "lastname", "username", "avatar"],
       include: {
@@ -131,6 +157,26 @@ module.exports = {
       },
       raw: true,
     });
-    return res.status(200).json({ tweets });
+    return tweets;
+  },
+  getMyRetweets: async (myId) => {
+    const retweets = await Retweet.findAll({
+      attributes: ["tweetId"],
+      where: {
+        userId: myId,
+      },
+      raw: true,
+    });
+    return retweets;
+  },
+  getMyLikes: async (myId) => {
+    const likes = await Like.findAll({
+      attributes: ["tweetId"],
+      where: {
+        userId: myId,
+      },
+      raw: true,
+    });
+    return likes;
   },
 };

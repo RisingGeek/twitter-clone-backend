@@ -1,5 +1,5 @@
-const { Tweet, Like, Retweet } = require("../sequelize");
-const { addTweetValidation } = require("../utils/validation");
+const { Tweet, Like, Retweet, User } = require("../sequelize");
+const { addTweetValidation, addRetweetValidation } = require("../utils/validation");
 
 module.exports = {
   addTweet: async (req, res) => {
@@ -46,7 +46,7 @@ module.exports = {
   addRetweet: async (req, res) => {
     // body -> {userId, tweetId}
     // Joi validation checks
-    const validation = addTweetValidation(req.body);
+    const validation = addRetweetValidation(req.body);
     if (validation.error)
       return res.status(400).json({ errors: validation.error.details });
 
@@ -84,5 +84,23 @@ module.exports = {
     const tweet = await Tweet.findByPk(req.body.tweetId);
     await tweet.decrement("retweetsCount");
     return res.status(200).json({ unRetweet });
+  },
+  getTweet: async (req, res) => {
+    // body -> {tweetId, username}
+    const tweet = await User.findOne({
+      attributes: ["firstname", "lastname", "username", "avatar"],
+      where: {
+        username: req.query.username,
+      },
+      include: {
+        model: Tweet,
+        where: {
+          id: req.query.tweetId,
+        },
+        required: true,
+      },
+      raw: true,
+    });
+    return res.status(200).json({ tweet });
   },
 };
