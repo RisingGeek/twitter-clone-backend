@@ -1,17 +1,17 @@
 const { Sequelize, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  return sequelize.define("Follower", {
+  return sequelize.define("Comment", {
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: Sequelize.UUIDV4,
     },
-    followed: {
+    userId: {
       type: DataTypes.UUID,
       allowNull: false,
     },
-    follower: {
+    tweetId: {
       type: DataTypes.UUID,
       allowNull: false,
     },
