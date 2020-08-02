@@ -1,4 +1,4 @@
-const { Tweet, User, Like } = require("../../sequelize");
+const { Tweet, User, Like, Comment, Retweet } = require("../../sequelize");
 const { addTweetValidation } = require("../../utils/validation");
 
 module.exports = {
@@ -47,6 +47,19 @@ module.exports = {
       raw: true,
     });
     return tweet;
+  },
+  removeTweet: async (req, res) => {
+    console.log("removing", req.body);
+    const { tweetId } = req.body;
+    // body -> {tweetId}
+    Promise.all([
+      await Tweet.destroy({ where: { id: tweetId } }),
+      await Like.destroy({ where: { tweetId } }),
+      await Comment.destroy({ where: { tweetId } }),
+      await Retweet.destroy({ where: { tweetId } }),
+    ]).then((values) => {
+      return res.status(200).json({ tweet: values[0] });
+    });
   },
   isLikedByMe: async (tweetId, id) => {
     const like = await Like.findOne({

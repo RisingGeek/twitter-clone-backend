@@ -14,10 +14,15 @@ const {
   removeRetweet,
   getTweetRetweets,
 } = require("../controllers/tweet/retweet");
-const { addComment, removeComment } = require("../controllers/tweet/comment");
+const {
+  addComment,
+  removeComment,
+  getTweetComments,
+} = require("../controllers/tweet/comment");
 
 router.post("/add-tweet", addTweet);
 router.get("/get-tweet", getTweet);
+router.delete("/remove", removeTweet);
 router.delete("/remove-tweet", removeTweet);
 router.post("/like/add", likeTweet);
 router.delete("/like/remove", unlikeTweet);
@@ -27,5 +32,6 @@ router.delete("/retweet/remove", removeRetweet);
 router.get("/retweet/get-retweets", getTweetRetweets);
 router.post("/comment/add", addComment);
 router.delete("/comment/remove", removeComment);
+router.get("/comment/get-comments", getTweetComments);
 
 module.exports = router;
