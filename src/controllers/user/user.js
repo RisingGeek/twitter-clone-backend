@@ -35,13 +35,13 @@ module.exports = {
       const user = await User.create(req.body);
       return res.status(200).json({ user });
     } catch (err) {
-      let errors = [];
+      let errors = {};
       console.log(err.errors);
       err.errors.map((e) => {
         if (e.path === "users.username" && e.validatorKey === "not_unique")
-          errors.push("Username is taken");
+          errors.username = "Username is taken";
         if (e.path === "users.email" && e.validatorKey === "not_unique")
-          errors.push("Email id is already registered");
+          errors.email = "Email id is already registered";
       });
       return res.status(400).json({ errors });
     }
