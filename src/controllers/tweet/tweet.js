@@ -5,14 +5,11 @@ const upload = require("../upload");
 module.exports = {
   addTweet: async (req, res) => {
     // Joi validation checks
-    console.log(req.body);
-    console.log(req.file);
-    console.log(req.file.buffer);
     const validation = addTweetValidation(req.body);
     if (validation.error)
       return res.status(400).json({ errors: validation.error.details });
 
-    upload(req.file.buffer, req.body.resource_type).then(async (media) => {
+    upload(req.file, req.body.resource_type).then(async (media) => {
       console.log(media)
       try {
         const tweet = await Tweet.create({

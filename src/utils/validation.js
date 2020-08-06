@@ -18,8 +18,8 @@ module.exports = {
     const schema = Joi.object({
       userId: Joi.string().required(),
       text: Joi.string().required(),
-      media: Joi.object(),
-      resource_type: Joi.string()
+      media: Joi.object().optional(),
+      resource_type: Joi.string().optional()
     }).options({ abortEarly: false });
     const { error, value } = schema.validate(data);
     return { error, value };
