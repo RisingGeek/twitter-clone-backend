@@ -1,4 +1,6 @@
 const router = require("express").Router();
+const multer = require("multer");
+const upload = multer();
 const {
   addTweet,
   getTweet,
@@ -20,7 +22,7 @@ const {
   getTweetComments,
 } = require("../controllers/tweet/comment");
 
-router.post("/add-tweet", addTweet);
+router.post("/add-tweet", upload.single("media"), addTweet);
 router.get("/get-tweet", getTweet);
 router.delete("/remove", removeTweet);
 router.delete("/remove-tweet", removeTweet);

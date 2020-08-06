@@ -14,6 +14,7 @@ module.exports = {
   tweetAttributes: [
     "id",
     "text",
+    "media",
     "commentsCount",
     "retweetsCount",
     "likesCount",
