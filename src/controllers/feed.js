@@ -18,12 +18,21 @@ module.exports = {
         module.exports.getRetweets(following),
         module.exports.getLikes(following),
       ]).then((values) => {
-        return res.status(200).json({ tweets: values });
+        let tweets = values[0].concat(values[1]).concat(values[2]);
+        const uniqueSet = new Set();
+        tweets = tweets.filter((tweet) => {
+          if (uniqueSet.has(tweet["Tweets.id"])) return false;
+          uniqueSet.add(tweet["Tweets.id"]);
+          return true;
+        });
+
+        return res.status(200).json({ tweets: tweets });
       });
     });
   },
   whoFollow: async (req, res) => {
-    // query -> userId
+    console.log("follow");
+    // query -> {userId}
     // Get my following and don't select
     const following = `SELECT users.id FROM users INNER JOIN followers ON users.id = followers.followed WHERE follower = '${req.query.userId}'`;
     const whoFollow = await User.findAll({
@@ -34,7 +43,6 @@ module.exports = {
           [Op.notIn]: sequelize.literal(`(${following})`),
         },
       },
-      offset: (req.query.page - 1) * 3,
       limit: 3,
     });
     return res.status(200).json({ whoFollow });
