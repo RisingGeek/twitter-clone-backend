@@ -10,15 +10,15 @@ const {
 
 module.exports = {
   getFeed: async (req, res) => {
-    module.exports.getMyFollowing(req.query.userId).then((res) => {
+    module.exports.getMyFollowing(req.query.userId).then((response) => {
       const following = [];
-      res.forEach((el) => following.push(el.id));
+      response.forEach((el) => following.push(el.id));
       Promise.all([
         module.exports.getTweets(following),
-        // getRetweets(req.query.userId, following),
-        // getLikes(req.query.userId, following),
-      ]).then(values => {
-        console.log(values)
+        module.exports.getRetweets(following),
+        module.exports.getLikes(following),
+      ]).then((values) => {
+        return res.status(200).json({ tweets: values });
       });
     });
   },
@@ -56,7 +56,6 @@ module.exports = {
     return users;
   },
   getTweets: async (following) => {
-    console.log(following)
     const tweets = await User.findAll({
       attributes: ["firstname", "lastname", "username", "avatar"],
       include: {
@@ -68,7 +67,45 @@ module.exports = {
           },
         },
       },
-      raw: true
+      raw: true,
+    });
+    return tweets;
+  },
+  getRetweets: async (following) => {
+    const tweetIds = `SELECT tweets.id from tweets INNER JOIN retweets ON tweets.id = retweets.tweetId WHERE retweets.userId IN (${following
+      .map((el) => "'" + el + "'")
+      .toString()})`;
+    const tweets = await User.findAll({
+      attributes: ["firstname", "lastname", "username", "avatar"],
+      include: {
+        model: Tweet,
+        required: true,
+        where: {
+          id: {
+            [Op.in]: sequelize.literal(`(${tweetIds})`),
+          },
+        },
+      },
+      raw: true,
+    });
+    return tweets;
+  },
+  getLikes: async (following) => {
+    const tweetIds = `SELECT tweets.id from tweets INNER JOIN likes ON tweets.id = likes.tweetId WHERE likes.userId IN (${following
+      .map((el) => "'" + el + "'")
+      .toString()})`;
+    const tweets = await User.findAll({
+      attributes: ["firstname", "lastname", "username", "avatar"],
+      include: {
+        model: Tweet,
+        required: true,
+        where: {
+          id: {
+            [Op.in]: sequelize.literal(`(${tweetIds})`),
+          },
+        },
+      },
+      raw: true,
     });
     return tweets;
   },
