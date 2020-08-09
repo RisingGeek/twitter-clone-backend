@@ -23,7 +23,7 @@ module.exports = {
     return likes;
   },
   getLikedTweets: async (id, tweetAttributes) => {
-    const sql = `select likes.tweetId from likes inner join users on users.id=likes.userId where users.id='${id}'`;
+    const sql = `select Likes.tweetId from Likes inner join Users on Users.id=Likes.userId where Users.id='${id}'`;
     const tweets = await User.findAll({
       attributes: ["firstname", "lastname", "username", "avatar"],
       include: {
@@ -56,7 +56,7 @@ module.exports = {
     return tweets;
   },
   getUserRetweets: async (id, tweetAttributes) => {
-    const sql = `select retweets.tweetId from retweets inner join tweets on tweets.id=retweets.tweetId where retweets.userId='${id}'`;
+    const sql = `select Retweets.tweetId from Retweets inner join Tweets on Tweets.id=Retweets.tweetId where Retweets.userId='${id}'`;
     let retweets = await User.findAll({
       attributes: ["firstname", "lastname", "username", "avatar"],
       include: {

@@ -34,7 +34,7 @@ module.exports = {
     console.log("follow");
     // query -> {userId}
     // Get my following and don't select
-    const following = `SELECT users.id FROM users INNER JOIN followers ON users.id = followers.followed WHERE follower = '${req.query.userId}'`;
+    const following = `SELECT Users.id FROM Users INNER JOIN Followers ON Users.id = Followers.followed WHERE follower = '${req.query.userId}'`;
     const whoFollow = await User.findAll({
       attributes: ["id", "firstname", "lastname", "username", "avatar"],
       where: {
@@ -80,7 +80,7 @@ module.exports = {
     return tweets;
   },
   getRetweets: async (following) => {
-    const tweetIds = `SELECT tweets.id from tweets INNER JOIN retweets ON tweets.id = retweets.tweetId WHERE retweets.userId IN (${
+    const tweetIds = `SELECT Tweets.id from Tweets INNER JOIN Retweets ON Tweets.id = Retweets.tweetId WHERE Retweets.userId IN (${
       following.length ? following.map((el) => "'" + el + "'").toString() : null
     })`;
     const tweets = await User.findAll({
@@ -99,7 +99,7 @@ module.exports = {
     return tweets;
   },
   getLikes: async (following) => {
-    const tweetIds = `SELECT tweets.id from tweets INNER JOIN likes ON tweets.id = likes.tweetId WHERE likes.userId IN (${
+    const tweetIds = `SELECT Tweets.id from Tweets INNER JOIN Likes ON Tweets.id = Likes.tweetId WHERE Likes.userId IN (${
       following.length ? following.map((el) => "'" + el + "'").toString() : null
     })`;
     const tweets = await User.findAll({
