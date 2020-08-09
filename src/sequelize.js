@@ -7,9 +7,9 @@ const LikeModel = require("./models/Like");
 const CommentModel = require("./models/Comment");
 
 // Connect to database
-const { DB, USERNAME, PASSWORD } = process.env;
+const { DB, USERNAME, PASSWORD, HOST } = process.env;
 const sequelize = new Sequelize(DB, USERNAME, PASSWORD, {
-  host: "localhost",
+  host: HOST,
   dialect: "mysql",
 });
 (async () => await sequelize.sync())();
