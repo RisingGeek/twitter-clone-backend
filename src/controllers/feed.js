@@ -80,9 +80,9 @@ module.exports = {
     return tweets;
   },
   getRetweets: async (following) => {
-    const tweetIds = `SELECT tweets.id from tweets INNER JOIN retweets ON tweets.id = retweets.tweetId WHERE retweets.userId IN (${following
-      .map((el) => "'" + el + "'")
-      .toString()})`;
+    const tweetIds = `SELECT tweets.id from tweets INNER JOIN retweets ON tweets.id = retweets.tweetId WHERE retweets.userId IN (${
+      following.length ? following.map((el) => "'" + el + "'").toString() : null
+    })`;
     const tweets = await User.findAll({
       attributes: ["firstname", "lastname", "username", "avatar"],
       include: {
@@ -99,9 +99,9 @@ module.exports = {
     return tweets;
   },
   getLikes: async (following) => {
-    const tweetIds = `SELECT tweets.id from tweets INNER JOIN likes ON tweets.id = likes.tweetId WHERE likes.userId IN (${following
-      .map((el) => "'" + el + "'")
-      .toString()})`;
+    const tweetIds = `SELECT tweets.id from tweets INNER JOIN likes ON tweets.id = likes.tweetId WHERE likes.userId IN (${
+      following.length ? following.map((el) => "'" + el + "'").toString() : null
+    })`;
     const tweets = await User.findAll({
       attributes: ["firstname", "lastname", "username", "avatar"],
       include: {
