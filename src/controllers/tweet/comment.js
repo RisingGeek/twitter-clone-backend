@@ -46,7 +46,7 @@ module.exports = {
       include: {
         model: Comment,
         required: true,
-        where: req.body,
+        where: req.query,
         order: [["createdAt", "DESC"]],
       },
       raw: true,
