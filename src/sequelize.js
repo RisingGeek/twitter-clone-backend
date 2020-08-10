@@ -35,6 +35,8 @@ User.hasMany(Retweet, { foreignKey: "userId" });
 Tweet.hasMany(Like, { foreignKey: "tweetId" });
 // Tweet -> Retweet association
 Tweet.hasMany(Retweet, { foreignKey: "tweetId" });
+// User -> Comment association
+User.hasMany(Comment, { foreignKey: "userId" });
 
 module.exports = {
   User,

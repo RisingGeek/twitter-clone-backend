@@ -19,5 +19,8 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    media: {
+      type: DataTypes.STRING,
+    },
   });
 };

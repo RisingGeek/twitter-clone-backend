@@ -32,7 +32,7 @@ router.get("/like/get-likes", getTweetLikes);
 router.post("/retweet/add", addRetweet);
 router.delete("/retweet/remove", removeRetweet);
 router.get("/retweet/get-retweets", getTweetRetweets);
-router.post("/comment/add", addComment);
+router.post("/comment/add", upload.single("media"), addComment);
 router.delete("/comment/remove", removeComment);
 router.get("/comment/get-comments", getTweetComments);
 
