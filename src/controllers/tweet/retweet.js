@@ -1,7 +1,6 @@
 const { Retweet, Tweet, User } = require("../../sequelize");
 const {
   addRetweetValidation,
-  addTweetValidation,
 } = require("../../utils/validation");
 
 module.exports = {
@@ -32,7 +31,7 @@ module.exports = {
   removeRetweet: async (req, res) => {
     // body -> {userId, tweetId}
     // Joi validation checks
-    const validation = addTweetValidation(req.body);
+    const validation = addRetweetValidation(req.body);
     if (validation.error)
       return res.status(400).json({ errors: validation.error.details });
 
