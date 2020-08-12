@@ -47,8 +47,8 @@ module.exports = {
         model: Comment,
         required: true,
         where: req.query,
-        order: [["createdAt", "DESC"]],
       },
+      order: [[Comment, "createdAt", "DESC"]],
       raw: true,
     });
     return res.status(200).json({ comments });

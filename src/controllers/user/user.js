@@ -98,9 +98,17 @@ module.exports = {
         ...retweet,
         isRetweet: true,
       }));
-      let tweets = values[0]
-        .concat(retweets)
-        .sort((a, b) => b["Tweets.createdAt"] - a["Tweets.createdAt"]);
+      let tweets = values[0].concat(retweets);
+      const uniqueSet = new Set();
+      tweets = tweets.filter((tweet) => {
+        if (uniqueSet.has(tweet["Tweets.id"])) return false;
+        uniqueSet.add(tweet["Tweets.id"]);
+        return true;
+      });
+      tweets.sort(
+        (a, b) =>
+          new Date(b["Tweets.createdAt"]) - new Date(a["Tweets.createdAt"])
+      );
 
       console.log(tweets);
       tweets = tweets.map((tweet) => {

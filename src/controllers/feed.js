@@ -7,9 +7,11 @@ const {
   Follower,
   sequelize,
 } = require("../sequelize");
+const { getMyRetweets, getMyLikes } = require("./user/globals");
 
 module.exports = {
   getFeed: async (req, res) => {
+    // query -> {userId}
     module.exports.getMyFollowing(req.query.userId).then((response) => {
       const following = [];
       response.forEach((el) => following.push(el.id));
@@ -17,13 +19,30 @@ module.exports = {
         module.exports.getTweets(following),
         module.exports.getRetweets(following),
         module.exports.getLikes(following),
+        getMyLikes(req.query.userId),
+        getMyRetweets(req.query.userId),
       ]).then((values) => {
+        let retweetSet = new Set();
+        let likeSet = new Set();
+        values[3].map((tweet) => likeSet.add(tweet.tweetId));
+        values[4].map((tweet) => retweetSet.add(tweet.tweetId));
+
         let tweets = values[0].concat(values[1]).concat(values[2]);
         const uniqueSet = new Set();
         tweets = tweets.filter((tweet) => {
           if (uniqueSet.has(tweet["Tweets.id"])) return false;
           uniqueSet.add(tweet["Tweets.id"]);
           return true;
+        });
+        tweets.sort(
+          (a, b) =>
+            new Date(b["Tweets.createdAt"]) - new Date(a["Tweets.createdAt"])
+        );
+        tweets = tweets.map((tweet) => {
+          let deepCopy = { ...tweet };
+          if (retweetSet.has(tweet["Tweets.id"])) deepCopy.selfRetweeted = true;
+          if (likeSet.has(tweet["Tweets.id"])) deepCopy.selfLiked = true;
+          return deepCopy;
         });
 
         return res.status(200).json({ tweets: tweets });
