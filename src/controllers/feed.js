@@ -1,17 +1,13 @@
 const { Op } = require("sequelize");
-const {
-  User,
-  Tweet,
-  Retweet,
-  Like,
-  Follower,
-  sequelize,
-} = require("../sequelize");
+const { User, Tweet, Follower, sequelize } = require("../sequelize");
 const { getMyRetweets, getMyLikes } = require("./user/globals");
 
 module.exports = {
   getFeed: async (req, res) => {
     // query -> {userId}
+    if (!req.query.userId)
+      return res.status(400).json({ errors: 'userId is required' });
+
     module.exports.getMyFollowing(req.query.userId).then((response) => {
       const following = [];
       response.forEach((el) => following.push(el.id));

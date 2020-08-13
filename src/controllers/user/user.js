@@ -9,6 +9,7 @@ const {
   getUserTweets,
   getUserRetweets,
 } = require("./globals");
+const { signJwt } = require("../../authorization");
 
 module.exports = {
   tweetAttributes: [
@@ -34,7 +35,22 @@ module.exports = {
 
       // Add user to User model
       const user = await User.create(req.body);
-      return res.status(200).json({ user });
+
+      const token = signJwt({
+        user: {
+          id: user.id,
+        },
+      });
+      return res.status(200).json({
+        user: {
+          id: user.id,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          username: user.username,
+          avatar: user.avatar,
+          token,
+        },
+      });
     } catch (err) {
       let errors = {};
       console.log(err.errors);
@@ -60,14 +76,29 @@ module.exports = {
       where: {
         [Op.or]: [{ username: req.body.user }, { email: req.body.user }],
       },
+      raw: true,
     });
     if (!user)
       return res.status(401).json({ user: "Incorrect username/email" });
 
     const match = await bcrypt.compare(req.body.password, user.password);
-    return match
-      ? res.status(200).json({ user })
-      : res.status(401).json({ password: "Incorrect password" });
+    if (!match) return res.status(401).json({ password: "Incorrect password" });
+
+    const token = signJwt({
+      user: {
+        id: user.id,
+      },
+    });
+    return res.status(200).json({
+      user: {
+        id: user.id,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        username: user.username,
+        avatar: user.avatar,
+        token,
+      },
+    });
   },
   getUserByUsername: async (req, res) => {
     const user = await User.findOne({
