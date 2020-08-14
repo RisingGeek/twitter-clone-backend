@@ -16,4 +16,4 @@ Create `.env` file at the root of the project with the following contents:
 
 `npm install`
 
-`npm run dev`
+`npm start`

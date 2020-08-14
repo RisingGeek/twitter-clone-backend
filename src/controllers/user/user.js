@@ -102,6 +102,18 @@ module.exports = {
   },
   getUserByUsername: async (req, res) => {
     const user = await User.findOne({
+      attributes: [
+        "id",
+        "firstname",
+        "lastname",
+        "username",
+        "bio",
+        "avatar",
+        "cover",
+        "location",
+        "dob",
+        "createdAt",
+      ],
       where: {
         username: req.query.username,
       },
