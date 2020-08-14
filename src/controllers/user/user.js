@@ -153,7 +153,6 @@ module.exports = {
           new Date(b["Tweets.createdAt"]) - new Date(a["Tweets.createdAt"])
       );
 
-      console.log(tweets);
       tweets = tweets.map((tweet) => {
         let deepCopy = { ...tweet };
         if (retweetSet.has(tweet["Tweets.id"])) deepCopy.selfRetweeted = true;
@@ -192,6 +191,44 @@ module.exports = {
         return deepCopy;
       });
       return res.status(200).json({ tweets: likedTweets });
+    });
+  },
+  getMediaByUserId: async (req, res) => {
+    // body -> {userId, myId}
+    Promise.all([
+      getUserTweets(req.query.userId, module.exports.tweetAttributes),
+      getUserRetweets(req.query.userId, module.exports.tweetAttributes),
+      getMyLikes(req.query.myId),
+      getMyRetweets(req.query.myId),
+    ]).then((values) => {
+      const likeSet = new Set();
+      const retweetSet = new Set();
+      values[2].map((tweet) => likeSet.add(tweet.tweetId));
+      values[3].map((tweet) => retweetSet.add(tweet.tweetId));
+      let retweets = values[1].map((retweet) => ({
+        ...retweet,
+        isRetweet: true,
+      }));
+      let tweets = values[0].concat(retweets);
+      const uniqueSet = new Set();
+      tweets = tweets.filter((tweet) => {
+        if (uniqueSet.has(tweet["Tweets.id"])) return false;
+        if (!tweet["Tweets.media"]) return false;
+        uniqueSet.add(tweet["Tweets.id"]);
+        return true;
+      });
+      tweets.sort(
+        (a, b) =>
+          new Date(b["Tweets.createdAt"]) - new Date(a["Tweets.createdAt"])
+      );
+
+      tweets = tweets.map((tweet) => {
+        let deepCopy = { ...tweet };
+        if (retweetSet.has(tweet["Tweets.id"])) deepCopy.selfRetweeted = true;
+        if (likeSet.has(tweet["Tweets.id"])) deepCopy.selfLiked = true;
+        return deepCopy;
+      });
+      res.status(200).json({ tweets });
     });
   },
 };
