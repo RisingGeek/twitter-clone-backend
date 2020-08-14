@@ -7,9 +7,10 @@ const {
   getLikesByUserId,
   getTweetsByUserId,
 } = require("../controllers/user/user");
+const { verifyJwt } = require("../authorization");
 
 router.post("/add-user", addUser);
-router.put("/edit-user", editUser);
+router.put("/edit-user", verifyJwt, editUser);
 router.post("/login-user", loginUser);
 router.get("/get-user", getUserByUsername);
 router.get("/get-tweets", getTweetsByUserId);

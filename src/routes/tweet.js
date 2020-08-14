@@ -21,19 +21,19 @@ const {
   removeComment,
   getTweetComments,
 } = require("../controllers/tweet/comment");
+const { verifyJwt } = require("../authorization");
 
 router.post("/add-tweet", upload.single("media"), addTweet);
 router.get("/get-tweet", getTweet);
-router.delete("/remove", removeTweet);
-router.delete("/remove-tweet", removeTweet);
-router.post("/like/add", likeTweet);
-router.delete("/like/remove", unlikeTweet);
+router.delete("/remove", verifyJwt, removeTweet);
+router.post("/like/add", verifyJwt, likeTweet);
+router.delete("/like/remove", verifyJwt, unlikeTweet);
 router.get("/like/get-likes", getTweetLikes);
-router.post("/retweet/add", addRetweet);
-router.delete("/retweet/remove", removeRetweet);
+router.post("/retweet/add", verifyJwt, addRetweet);
+router.delete("/retweet/remove", verifyJwt, removeRetweet);
 router.get("/retweet/get-retweets", getTweetRetweets);
 router.post("/comment/add", upload.single("media"), addComment);
-router.delete("/comment/remove", removeComment);
+router.delete("/comment/remove", verifyJwt, removeComment);
 router.get("/comment/get-comments", getTweetComments);
 
 module.exports = router;
