@@ -18,7 +18,6 @@ module.exports = {
     return res.status(200).json({ like });
   },
   unlikeTweet: async (req, res) => {
-    console.log(req.body)
     const unlike = await Like.destroy({
       where: req.body,
     });

@@ -5,6 +5,7 @@ const TweetModel = require("./models/Tweet");
 const RetweetModel = require("./models/Retweet");
 const LikeModel = require("./models/Like");
 const CommentModel = require("./models/Comment");
+const BookmarkModel = require("./models/Bookmark");
 
 // Connect to database
 const { DB, USER, PASSWORD, HOST } = process.env;
@@ -20,6 +21,7 @@ const Tweet = TweetModel(sequelize);
 const Retweet = RetweetModel(sequelize);
 const Like = LikeModel(sequelize);
 const Comment = CommentModel(sequelize);
+const Bookmark = BookmarkModel(sequelize);
 
 // User -> Follower association
 User.hasMany(Follower, { as: "Followers", foreignKey: "follower" });
@@ -37,6 +39,9 @@ Tweet.hasMany(Like, { foreignKey: "tweetId" });
 Tweet.hasMany(Retweet, { foreignKey: "tweetId" });
 // User -> Comment association
 User.hasMany(Comment, { foreignKey: "userId" });
+// Tweet -> Bookmark association
+Tweet.hasMany(Bookmark, { foreignKey: "tweetId" });
+User.hasMany(Bookmark, {foreignKey: 'userId'})
 
 module.exports = {
   User,
@@ -45,5 +50,6 @@ module.exports = {
   Retweet,
   Like,
   Comment,
+  Bookmark,
   sequelize,
 };
