@@ -1,6 +1,6 @@
 const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
-const { User, Tweet, sequelize } = require("../../sequelize");
+const { User } = require("../../sequelize");
 const { addUserValidation } = require("../../utils/validation");
 const {
   getMyRetweets,
@@ -10,6 +10,7 @@ const {
   getUserRetweets,
 } = require("./globals");
 const { signJwt } = require("../../authorization");
+const upload = require("../upload");
 
 module.exports = {
   tweetAttributes: [
@@ -48,6 +49,10 @@ module.exports = {
           lastname: user.lastname,
           username: user.username,
           avatar: user.avatar,
+          cover: user.cover,
+          dob: user.dob,
+          location: user.location,
+          bio: user.bio,
           token,
         },
       });
@@ -64,12 +69,31 @@ module.exports = {
     }
   },
   editUser: async (req, res) => {
-    try {
-      const user = await User.update(req.body, { where: { id: req.body.id } });
-      return res.status(200).json({ user });
-    } catch (error) {
-      return res.status(400).json({ errors: error });
-    }
+    // body -> {id, firstname, lastname, dob, media}
+    console.log("files", req.files);
+    const avatar = req.files.avatar ? req.files.avatar[0] : null;
+    const cover = req.files.cover ? req.files.cover[0] : null;
+    Promise.all([upload(avatar, "image"), upload(cover, "image")]).then(
+      async (photos) => {
+        const obj = {
+          firstname: req.body.firstname,
+          lastname: req.body.lastname,
+          bio: req.body.bio,
+          location: req.body.location,
+          dob: req.body.dob,
+        };
+        if (photos[0].secure_url) obj.avatar = photos[0].secure_url;
+        if (photos[1].secure_url) obj.cover = photos[1].secure_url;
+        try {
+          const user = await User.update(obj, {
+            where: { id: req.body.userId },
+          });
+          return res.status(200).json({ user: obj });
+        } catch (error) {
+          return res.status(400).json({ errors: error });
+        }
+      }
+    );
   },
   loginUser: async (req, res) => {
     const user = await User.findOne({
@@ -96,6 +120,10 @@ module.exports = {
         lastname: user.lastname,
         username: user.username,
         avatar: user.avatar,
+        cover: user.cover,
+        dob: user.dob,
+        location: user.location,
+        bio: user.bio,
         token,
       },
     });

@@ -1,4 +1,6 @@
 const router = require("express").Router();
+const multer = require("multer");
+const upload = multer();
 const {
   addUser,
   editUser,
@@ -11,7 +13,7 @@ const {
 const { verifyJwt } = require("../authorization");
 
 router.post("/add-user", addUser);
-router.put("/edit-user", verifyJwt, editUser);
+router.put("/edit-user", [verifyJwt, upload.fields([{name: "avatar"}, {name: "cover"}])], editUser);
 router.post("/login-user", loginUser);
 router.get("/get-user", getUserByUsername);
 router.get("/get-tweets", getTweetsByUserId);
