@@ -34,7 +34,7 @@ module.exports = (sequelize) => {
         },
         avatar: {
             type: DataTypes.STRING,
-            defaultValue: 'https://res.cloudinary.com/twitter-clone-media/image/upload/v1596009619/user_wfe6xq.png'
+            defaultValue: 'https://res.cloudinary.com/twitter-clone-media/image/upload/v1597737557/user_wt3nrc.png'
         },
         cover: {
             type: DataTypes.STRING
