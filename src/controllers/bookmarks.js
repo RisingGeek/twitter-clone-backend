@@ -17,22 +17,17 @@ module.exports = {
     const tweetIds = `SELECT tweetId from Bookmarks where userId='${req.query.userId}'`;
     const tweets = await User.findAll({
       attributes: ["firstname", "lastname", "username", "avatar"],
-      include: [
-        {
-          model: Tweet,
-          required: true,
-          attributes: module.exports.tweetAttributes,
-        },
-        {
-          model: Bookmark,
-          required: true,
-          where: {
-            userId: req.query.userId,
+      include: {
+        model: Tweet,
+        required: true,
+        attributes: module.exports.tweetAttributes,
+        where: {
+          id: {
+            [Op.in]: sequelize.literal(`(${tweetIds})`),
           },
         },
-      ],
-      order: [[Bookmark, "createdAt", "DESC"]],
-
+      },
+      order: [[Tweet, "createdAt", "DESC"]],
       raw: true,
     });
     return res.status(200).json({ tweets });
