@@ -1,5 +1,7 @@
 # Twitter Clone backend
 
+> I will be migrating the database to a better service in a few days so as to improve the latency 
+
 ## Run locally
 
 Requirements: Node, npm, MySQL
