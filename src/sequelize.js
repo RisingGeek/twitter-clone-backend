@@ -8,9 +8,10 @@ const CommentModel = require("./models/Comment");
 const BookmarkModel = require("./models/Bookmark");
 
 // Connect to database
-const { DB, USER, PASSWORD, HOST, DB_PORT } = process.env;
-const sequelize = new Sequelize(DB, USER, PASSWORD, {
-  host: HOST,
+const { DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT } = process.env;
+console.log(process.env.USER)
+const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
+  host: DB_HOST,
   port: DB_PORT,
   dialect: "mysql",
 });
