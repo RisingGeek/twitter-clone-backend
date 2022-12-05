@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "name": "twitter-clone-backend",
+  "builds": [
+    {
+      "src": "src/app.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "src/app.js"
+    }
+  ]
+}
