@@ -11,7 +11,7 @@ const explore = require("./routes/explore");
 const bookmarks = require("./routes/bookmarks");
 
 const app = express();
-app.use(cors());
+app.use(cors())
 app.use(bodyParser.json());
 app.use(express.static("public"));
 app.use(function (req, res, next) {
